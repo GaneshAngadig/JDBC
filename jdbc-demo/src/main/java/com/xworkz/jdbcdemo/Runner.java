@@ -2,13 +2,15 @@ package com.xworkz.jdbcdemo;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Properties;
 import java.util.Scanner;
 
 public class Runner {
+	static Scanner sc = new Scanner(System.in);
 	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
 
 //		insertMovie();
 //		updateMovie();
@@ -18,15 +20,15 @@ public class Runner {
 		//movieDAO.getNameByMovieId();
 		//System.out.println("get movie name By Id");
 		//int id = sc.nextInt();
-		//movieDAO.getAll();
-		System.out.println("get language and budget by movie name");
-		String nam=sc.next();
-		movieDAO.getLanguageAndBudgetByName("nam");
+		movieDAO.getAll();
+		//System.out.println("get language and budget by movie name");
+		//String nam=sc.next();
+		//movieDAO.getLanguageAndBudgetByName(nam);
 		
 	}
 
 	private static void insertMovie() {
-		Scanner sc = new Scanner(System.in);
+
 
 		System.out.println("enter movie id");
 		int id = sc.nextInt();
@@ -88,7 +90,6 @@ public class Runner {
 	}
 
 	private static void updateMovie() {
-		Scanner sc = new Scanner(System.in);
 
 		System.out.println("enter movie name to update");
 		String name = sc.next();
@@ -178,6 +179,139 @@ public class Runner {
 			} catch (Exception e2) {
 				// TODO: handle exception
 			}
+		}
+	}
+	public void getMovieNameByMovieId() {
+
+		System.out.println("enter movie id get movie name");
+		int id = sc.nextInt();
+
+		String query = "SELECT mv.name FROM movie mv WHERE id=(" + id + ")";
+
+		Connection connection = null;
+		Statement statement = null;
+		ResultSet resultSet = null;
+
+		try {
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/jan06", "root", "root");
+
+			statement = connection.createStatement();
+
+//			step 5
+//			Processing the result set
+			resultSet = statement.executeQuery(query);
+
+			while (resultSet.next()) {
+				String movieName = resultSet.getString("name");
+				System.out.println("movie name:" + movieName);
+
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+
+			try {
+				if (resultSet != null)
+					resultSet.close();
+				if (statement != null)
+					statement.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+	}
+
+	
+	public void getAll() {
+
+		String query = "SELECT * FROM movie ";
+
+		Connection connection = null;
+		Statement statement = null;
+		ResultSet resultSet = null;
+
+		try {
+			
+			
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/jan6", "root", "root");
+
+			statement = connection.createStatement();
+
+//			step 5
+//			Processing the result set
+			resultSet = statement.executeQuery(query);
+
+			while (resultSet.next()) {
+
+				System.out.println("id:" + resultSet.getInt("id"));
+				System.out.println("name:" + resultSet.getString("name"));
+				System.out.println("rating:" + resultSet.getDouble("rating"));
+				System.out.println("langauge:" + resultSet.getString("language"));
+				System.out.println("budget:" + resultSet.getLong("budget"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+
+			try {
+				if (resultSet != null)
+					resultSet.close();
+				if (statement != null)
+					statement.close();
+
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
+
+	}
+
+	private Properties loadPropertiesFile() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
+	public void getLanguageAndBudgetByMovieName(String movieName) {
+		String query = "SELECT language,budget FROM movie where name=('" + movieName + "')";
+
+		Connection connection = null;
+		Statement statement = null;
+		ResultSet resultSet = null;
+
+		try {
+			connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/jan06", "root", "root");
+
+			statement = connection.createStatement();
+
+//			step 5
+//			Processing the result set
+			resultSet = statement.executeQuery(query);
+
+			while (resultSet.next()) {
+
+				System.out.println("langauge:" + resultSet.getString("language"));
+				System.out.println("budget:" + resultSet.getLong("budget"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+
+			try {
+				if (resultSet != null)
+					resultSet.close();
+				if (statement != null)
+					statement.close();
+
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 		}
 	}
 
